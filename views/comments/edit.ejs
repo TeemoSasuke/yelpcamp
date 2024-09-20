@@ -1,0 +1,39 @@
+<% layout('layout') %>
+
+    <div class="container mt-5">
+        <h2>Edit Comment</h2>
+        <form id="commentForm" class="needs-validation"
+            action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=PUT" method="POST"
+            novalidate>
+
+            <div class="form-group">
+                <label for="rating">Rating:</label>
+                <fieldset class="starability-basic">
+                    <input type="radio" id="rate1" name="comment[rating]" value="1" required/>
+                    <label for="rate1" title="Terrible">1 star</label>
+
+                    <input type="radio" id="rate2" name="comment[rating]" value="2" required/>
+                    <label for="rate2" title="Not good">2 stars</label>
+
+                    <input type="radio" id="rate3" name="comment[rating]" value="3" required/>
+                    <label for="rate3" title="Average">3 stars</label>
+
+                    <input type="radio" id="rate4" name="comment[rating]" value="4" required/>
+                    <label for="rate4" title="Very good">4 stars</label>
+
+                    <input type="radio" id="rate5" name="comment[rating]" value="5" required/>
+                    <label for="rate5" title="Amazing">5 stars</label>
+                </fieldset>
+                <div class="invalid-feedback">
+                    Please provide a rating.
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="body">Comment:</label>
+                <textarea id="body" name="comment[body]" class="form-control" required><%= comment.body %></textarea>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Update Comment</button>
+        </form>
+    </div>

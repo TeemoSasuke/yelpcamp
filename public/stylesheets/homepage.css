@@ -1,0 +1,74 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    /* 设置背景图像并调暗 */
+    background: url('/images/homepage.jpg') no-repeat center center fixed;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, 0.5); /* 黑色半透明覆盖层 */
+    background-blend-mode: overlay; /* 结合背景颜色和背景图像 */
+}
+  
+.home-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    padding-top: 60px; /* 给Navbar留出空间 */
+}
+
+/* 自定义下拉菜单项的对齐 */
+.nav-item {
+    text-align: right;
+}
+
+/* 使下拉菜单的右边缘对齐到父元素的右边缘 */
+.nav-item {
+    right: 0;
+    left: auto;
+}
+  
+/* 增加 APP Camp 字体大小和样式 */
+.navbar .navbar-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.navbar-nav.ms-auto {
+    margin-left: auto !important;
+}
+
+.explore-btn {
+    padding: 12px 24px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #000; /* 黑色背景 */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none; /* 去掉下滑线 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 增加阴影效果 */
+}
+
+.explore-btn:hover {
+    background-color: #333; /* 悬停时背景变为深灰色 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* 悬停时阴影效果 */
+    color: #fff; /* 确保悬停时文本颜色不变 */
+    text-decoration: none; /* 确保悬停时没有下滑线 */
+}
+
+.explore-btn:focus {
+    outline: none; /* 移除默认焦点轮廓 */
+}

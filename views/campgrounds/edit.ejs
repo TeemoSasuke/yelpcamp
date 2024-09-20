@@ -1,0 +1,167 @@
+<% layout('layout') %>
+
+    <h1>Edit <%= campground.title %>
+    </h1>
+
+    <div class="flash-message-container flash-message">
+        <% if (error && error.length> 0) { %>
+            <div id="flash-message" class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+    </div>
+
+    <form id="editCampgroundForm" class="needs-validation" action="/campgrounds/<%= campground._id %>?_method=PUT"
+        method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" name="campground[title]" value="<%= campground.title %>"
+                required>
+            <div class="invalid-feedback">
+                Please enter a title.
+            </div>
+        </div>
+
+        <div id="existingImages" class="form-group">
+            <h5>Existing Images:</h5>
+            <% campground.images.forEach(image=> { %>
+                <div class="mb-2">
+                    <img src="<%= image.thumbnail %>" alt="Campground image" class="img-thumbnail"
+                        style="width: 200px;">
+                    <button type="button" class="btn btn-danger delete-image-btn"
+                        data-id="<%= image.filename %>">Delete</button>
+                </div>
+                <% }) %>
+        </div>
+
+        <div class="mb-3">
+            <label for="images" class="form-label">Upload New Images:</label>
+            <input type="file" id="images" name="images" multiple class="form-control">
+            <!-- 缩略图展示的容器 -->
+            <div id="imagePreview" style="display: flex; gap: 10px;"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" class="form-control" id="price" name="campground[price]" min="0"
+                value="<%= campground.price %>" required>
+            <div class="invalid-feedback">
+                Please enter a price greater than or equal to 0.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="campground[description]" rows="3"
+                required><%= campground.description %></textarea>
+            <div class="invalid-feedback">
+                Please enter a description.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" class="form-control" id="location" name="campground[location]"
+                value="<%= campground.location %>" required>
+            <div class="invalid-feedback">
+                Please enter a location.
+            </div>
+        </div>
+
+        <input type="hidden" name="deletedImages" id="deletedImages">
+        <button type="submit" class="btn btn-warning">Update Campground</button>
+    </form>
+
+    <a href="/campgrounds/<%= campground._id %>" class="btn btn-secondary mt-3">Cancel</a>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var form = document.getElementById('editCampgroundForm');
+
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+
+            // 页面加载时计算现有图片的数量
+            updateExistingImagesCount();
+
+        })();
+
+        document.querySelectorAll('.delete-image-btn').forEach(button => {
+            button.addEventListener('click', function () {
+
+                const imageId = this.getAttribute('data-id');
+
+                const deletedImagesInput = document.getElementById('deletedImages');
+                let currentDeletedImages = deletedImagesInput.value ? deletedImagesInput.value.split(',') : [];
+                currentDeletedImages.push(imageId);
+                deletedImagesInput.value = currentDeletedImages.join(',');
+
+                // 移除图片容器
+                this.parentElement.remove();
+
+                // 更新 existingImages 的数量
+                updateExistingImagesCount();
+            });
+        });
+
+        function updateExistingImagesCount() {
+            const existingImages = document.querySelectorAll('#existingImages .delete-image-btn');
+            console.log('Updated Existing images:', existingImages.length);
+            // 更新 form validation 状态
+            document.getElementById('editCampgroundForm').setAttribute('data-existing-images-count', existingImages.length);
+        }
+
+        function validateForm() {
+            // 获取 updated existingImages 数量
+            const existingImagesCount = parseInt(document.getElementById('editCampgroundForm').getAttribute('data-existing-images-count') || '0');
+            console.log('Existing images:', existingImagesCount);
+
+            const fileInput = document.getElementById('images');
+            if (fileInput) {
+                const newImagesLength = fileInput.files.length;
+                console.log('New images selected:', newImagesLength);
+
+                // 如果现有图片为零，则需要检查新图片
+                if (existingImagesCount === 0 && newImagesLength === 0) {
+                    alert('You must upload at least one new image.');
+                    return false; // 阻止表单提交
+                }
+            } else {
+                console.error('File input element not found.');
+            }
+
+            return true; // 允许表单提交
+        }
+
+        document.getElementById('images').addEventListener('change', function (event) {
+            const files = event.target.files;
+            const preview = document.getElementById('imagePreview');
+
+            // 清空之前的预览图
+            preview.innerHTML = '';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100px'; // 设置图片预览宽度
+                    img.style.marginRight = '10px'; // 设置图片之间的间距
+                    preview.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>

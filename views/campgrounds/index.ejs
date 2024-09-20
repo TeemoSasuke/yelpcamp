@@ -1,0 +1,116 @@
+<% layout('layout') %>
+
+<div class="row mt-4">
+    <div class="map-container" style="margin-bottom: 35px;">
+        <div id="map" style="width: 100%; height: 400px; padding-bottom: 20px;"></div>
+    </div>
+    <% campgrounds.forEach(campground => { %>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <!-- 判断是否显示 Carousel -->
+                <% if (campground.images.length > 1) { %>
+                    <!-- 显示多张图片的 Carousel -->
+                    <div id="campgroundCarousel<%= campground._id %>" class="carousel slide">
+                        <div class="carousel-inner">
+                            <% campground.images.forEach((image, index) => { %>
+                                <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                                    <img src="<%= image.url %>" class="d-block w-100" alt="Campground Image">
+                                </div>
+                            <% }) %>
+                        </div>
+                        <!-- 添加分页指示器 -->
+                        <div class="carousel-indicators">
+                            <% campground.images.forEach((image, index) => { %>
+                                <button type="button" data-bs-target="#campgroundCarousel<%= campground._id %>"
+                                    data-bs-slide-to="<%= index %>" class="<%= index === 0 ? 'active' : '' %>"
+                                    aria-current="true" aria-label="Slide <%= index + 1 %>"></button>
+                            <% }) %>
+                        </div>
+                        <!-- 添加导航按钮 -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel<%= campground._id %>"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel<%= campground._id %>"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                <% } else if (campground.images.length === 1) { %>
+                    <!-- 显示单张图片 -->
+                    <img src="<%= campground.images[0].url %>" class="d-block w-100" alt="Campground Image">
+                <% } %>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= campground.title %>
+                    </h5>
+                    <p class="card-text">
+                        <%= campground.description %>
+                    </p>
+                    <p class="card-text">$<%= campground.price %></p>
+                    <p class="card-text text-muted">
+                        <small>By: <%= campground.author.username %></small>
+                    </p>
+                    <a href="/campgrounds/<%= campground._id %>" class="btn btn-info">View</a>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+<script>
+    // 假设 campgrounds 是从服务器端传过来的数据
+    var campgrounds = <%- JSON.stringify(campgrounds) %>;
+
+    // 初始化地图，但不要设置初始视图
+    var map = L.map('map');
+
+    // 设置 TileLayer
+    L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=<%= apiKey %>', {
+        attribution: '© <a href="https://www.maptiler.com/copyright">MapTiler</a> contributors'
+    }).addTo(map);
+
+    // 创建 markerClusterGroup 实例
+    var markers = L.markerClusterGroup();
+    
+    // 创建一个空的数组来存储所有标记的经纬度坐标
+    var markerBounds = [];
+
+    // 遍历所有的 campground，创建标记并添加到 markerClusterGroup
+    campgrounds.forEach(function(campground) {
+        var marker = L.marker([campground.latitude, campground.longitude])
+            .bindPopup('<b>' + campground.title + '</b><br>' + campground.description +
+                        '<a href="/campgrounds/' + campground._id + '">View Details</a>');
+        
+        markers.addLayer(marker);  // 将每个标记添加到聚合组
+
+        // 将每个标记的经纬度存储到 markerBounds 中
+        markerBounds.push([campground.latitude, campground.longitude]);
+    });
+
+    // 将聚合组添加到地图上
+    map.addLayer(markers);
+
+    // 使用 fitBounds 方法让地图自动缩放到所有标记的范围
+    if (markerBounds.length > 0) {
+        map.fitBounds(markerBounds);
+    }
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof map === 'undefined') {
+        // 初始化地图
+        map = L.map('map').setView([40.7128, -74.0060], 10);
+
+        L.tileLayer(`https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=<%= apiKey %>`, {
+            attribution: '© <a href="https://www.maptiler.com/copyright">MapTiler</a> contributors'
+        }).addTo(map);
+
+        console.log('地图初始化完成');
+    }
+}); 
+
+</script>

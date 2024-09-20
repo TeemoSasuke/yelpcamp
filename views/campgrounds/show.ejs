@@ -1,0 +1,126 @@
+<% layout('layout') %>
+
+    <div class="container mt-5">
+        <div class="card mx-auto" style="width: 100%; max-width: 600px;">
+            <div id="campgroundCarousel" class="carousel slide">
+                <div class="carousel-inner">
+                  <% campground.images.forEach((image, index) => { %>
+                    <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+                      <img src="<%= image.url %>" class="d-block w-100" alt="Campground Image">
+                    </div>
+                  <% }) %>
+                </div>
+                <!-- 添加分页指示器 -->
+                <div class="carousel-indicators">
+                  <% campground.images.forEach((image, index) => { %>
+                    <button type="button" data-bs-target="#campgroundCarousel" data-bs-slide-to="<%= index %>" class="<%= index === 0 ? 'active' : '' %>" aria-current="true" aria-label="Slide <%= index + 1 %>"></button>
+                  <% }) %>
+                </div>
+                <!-- 添加导航按钮 -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            <div class="card-body">
+                <h1 class="card-title">
+                    <%= campground.title %>
+                </h1>
+                <hr>
+                <p class="card-text">
+                    <%= campground.description %>
+                </p>
+                <hr>
+                <p class="card-text">Location: <%= campground.location %>
+                </p>
+                <hr>
+                <p class="card-text">Price: $<%= campground.price %>
+                </p>
+                <hr>
+                <!-- 添加作者信息 -->
+                <p class="card-text text-muted">Author: <%= campground.author.username %>
+                </p>
+
+                <a href="/campgrounds/<%= campground._id %>/edit" class="btn btn-warning">Edit</a>
+                <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST" class="d-inline">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+                <a href="/campgrounds" class="btn btn-secondary">Back to Campgrounds</a>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="container mt-4">
+            <h3>Comments</h3>
+            <% if (campground.comments.length> 0) { %>
+                <ul class="list-group">
+                    <% campground.comments.forEach(comment=> { %>
+                        <li class="list-group-item">
+                            <p><strong>Rating:</strong>
+                                <% for (let i=1; i <=5; i++) { %>
+                                    <span
+                                        class="<%= i <= comment.rating ? 'text-warning' : 'text-muted' %>">&#9733;</span>
+                                    <% } %>
+                            </p>
+                            <p>
+                                <%= comment.body %>
+                            </p>
+                            <p class="text-muted">Comment by: <%= comment.author.username %>
+                            </p>
+                            <!-- Edit and Delete buttons -->
+                            <a href="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>/edit"
+                                class="btn btn-warning btn-sm">Edit</a>
+                            <form action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE"
+                                method="POST" class="d-inline">
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </li>
+
+                        <% }) %>
+                </ul>
+                <% } else { %>
+                    <p>No comments yet.</p>
+                    <% } %>
+
+                        <!-- Add Comment Form -->
+                        <h3 class="mt-4">Add a Comment</h3>
+                        <form id="commentForm" class="needs-validation"
+                            action="/campgrounds/<%= campground._id %>/comments" method="POST" novalidate>
+                            <div class="form-group">
+                                <label for="rating">Rating</label>
+                                <fieldset class="starability-basic">
+                                    <input type="radio" id="rate1" name="comment[rating]" value="1" required />
+                                    <label for="rate1" title="Terrible">1 star</label>
+
+                                    <input type="radio" id="rate2" name="comment[rating]" value="2" required />
+                                    <label for="rate2" title="Not good">2 stars</label>
+
+                                    <input type="radio" id="rate3" name="comment[rating]" value="3" required />
+                                    <label for="rate3" title="Average">3 stars</label>
+
+                                    <input type="radio" id="rate4" name="comment[rating]" value="4" required />
+                                    <label for="rate4" title="Very good">4 stars</label>
+
+                                    <input type="radio" id="rate5" name="comment[rating]" value="5" required />
+                                    <label for="rate5" title="Amazing">5 stars</label>
+                                </fieldset>
+                                <div class="invalid-feedback">
+                                    Please provide a rating.
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="body">Comment</label>
+                                <textarea class="form-control" id="body" name="comment[body]" rows="3"
+                                    required></textarea>
+                                <div class="invalid-feedback">
+                                    Please enter a comment.
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+        </div>
+    </div>

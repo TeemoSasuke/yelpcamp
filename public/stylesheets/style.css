@@ -1,0 +1,123 @@
+/* 固定 Navbar 在页面顶部 */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    /* 确保 Navbar 位于其他内容之上 */
+}
+
+/* 确保 html 和 body 高度为 100% */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* 使用 Grid 布局 */
+body {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    /* 三行：自动高度的 Navbar，填充内容的 MainContent，和自动高度的 Footer */
+}
+
+/* 固定 footer 在页面底部 */
+.footer {
+    background-color: #f8f9fa;
+    height: 60px;
+    /* 根据需要调整高度 */
+    text-align: center;
+    padding: 10px;
+}
+
+/* 包裹表单的容器，确保它在页面上居中 */
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    /* 使容器高度覆盖整个视口 */
+}
+
+/* 将 form-container 居中 */
+.form-container {
+    background-color: #f8f9fa;
+    /* 给表单容器加背景颜色 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    /* 添加阴影效果 */
+    width: 100%;
+    max-width: 400px;
+    /* 控制最大宽度 */
+}
+
+/* Flash 消息的样式 */
+.flash-message {
+    position: fixed;
+    /* 固定定位 */
+    top: 100px;
+    /* 从页面顶部的距离，调整到适合的位置 */
+    left: 50%;
+    /* 居中对齐 */
+    transform: translateX(-50%);
+    /* 水平居中 */
+    padding: 10px;
+    border: none;
+    /* 无边框 */
+    border-radius: 5px;
+    z-index: 1000;
+    /* 确保 Flash 消息在最上层 */
+    width: auto;
+    /* 自适应宽度 */
+    max-width: 90%;
+    /* 最大宽度 */
+    text-align: center;
+    /* 文本居中对齐 */
+}
+
+/* 自定义下拉菜单项的对齐 */
+.nav-item {
+    text-align: right;
+    /* 让下拉菜单项靠右对齐 */
+}
+
+/* 使下拉菜单的右边缘对齐到父元素的右边缘 */
+.nav-item {
+    right: 0;
+    left: auto;
+}
+
+/* 增加 APP Camp 字体大小和样式 */
+.navbar .navbar-brand {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    color: #333;
+    text-transform: uppercase;
+}
+
+.navbar-nav.ms-auto {
+    margin-left: auto !important;
+}
+
+/* 占位元素样式 */
+.navbar-placeholder {
+    height: 85px;
+    /* 设置与 Navbar 相同的高度 */
+    background: transparent;
+    /* 背景透明或与 Navbar 背景颜色相同 */
+}
+
+.navbar {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    /* 确保图片覆盖整个 Carousel */
+    /* height: 300px;
+    根据需要调整高度 */
+}
